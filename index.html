@@ -1,77 +1,246 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
 <head>
-  <meta charset='utf-8'>
 
-  <title>danshearmur/jenkins-radiator @ GitHub</title>
+<meta charset="utf-8">
+<title>jenkins</title>
+<link rel="stylesheet" href="http://twitter.github.com/bootstrap/assets/css/bootstrap-1.2.0.min.css">
+<style>
+  html, body { height:100%; }
+  body { background-image: -webkit-gradient(linear, left top, left bottom, from(#555), to(#202020)); }
+  h3.container { margin:0 20px; width:auto; }
+  #builds { padding:60px 10px 10px 10px; }
+  #sorted, .timestamp { float:right; margin-top:9px; }
+  #sorted { color:#EF6B00; display:none; }
+  .alert-message { display:none; }
+  .sorted .alert-message { display:block; }
+  dl { margin:0; }
+  .fill { position:relative; }
+  #progress { position:absolute; height:2px; width:100%; left:0; top:0; background:#EF6B00; -webkit-transition:width 60s linear; z-index:+1000; }
+  #progress.hide { width:0%; }
+  #progress.notrans { -webkit-transition:none !important; }
+  .success .culprit { display:none; }
+</style>
 
-  <style type="text/css">
-    body {
-      margin-top: 1.0em;
-      background-color: #24a623;
-      font-family: Helvetica, Arial, FreeSans, san-serif;
-      color: #ffffff;
-    }
-    #container {
-      margin: 0 auto;
-      width: 700px;
-    }
-    h1 { font-size: 3.8em; color: #db59dc; margin-bottom: 3px; }
-    h1 .small { font-size: 0.4em; }
-    h1 a { text-decoration: none }
-    h2 { font-size: 1.5em; color: #db59dc; }
-    h3 { text-align: center; color: #db59dc; }
-    a { color: #db59dc; }
-    .description { font-size: 1.2em; margin-bottom: 30px; margin-top: 30px; font-style: italic;}
-    .download { float: right; }
-    pre { background: #000; color: #fff; padding: 15px;}
-    hr { border: 0; width: 80%; border-bottom: 1px solid #aaa}
-    .footer { text-align:center; padding-top:30px; font-style: italic; }
-  </style>
 </head>
 
 <body>
-  <a href="http://github.com/danshearmur/jenkins-radiator"><img style="position: absolute; top: 0; right: 0; border: 0;" src="http://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub" /></a>
 
-  <div id="container">
-
-    <div class="download">
-      <a href="http://github.com/danshearmur/jenkins-radiator/zipball/master">
-        <img border="0" width="90" src="http://github.com/images/modules/download/zip.png"></a>
-      <a href="http://github.com/danshearmur/jenkins-radiator/tarball/master">
-        <img border="0" width="90" src="http://github.com/images/modules/download/tar.png"></a>
+  <header class="topbar">
+    <div class="fill">
+      <h3 class="container"><a href="/">SIPP<span style="color:#EF6B00">2</span> Jenkins</span></a><p id="sorted">Sorted: &#10004;</p></h3>
+      <div id="progress"></div>
     </div>
+  </header>
 
-    <h1><a href="http://github.com/danshearmur/jenkins-radiator">jenkins-radiator</a>
-      <span class="small">by <a href="http://github.com/danshearmur">danshearmur</a></span></h1>
-
-    <div class="description">
-      
-    </div>
-
-    <h2>Authors</h2>
-<p>Dan Shearmur (dan.shearmur@semantico.com)<br/><br/>      </p>
-<h2>Contact</h2>
-<p>Daniel Shearmur (dan@shearmur.co.uk)<br/>      </p>
-
-
-    <h2>Download</h2>
-    <p>
-      You can download this project in either
-      <a href="http://github.com/danshearmur/jenkins-radiator/zipball/master">zip</a> or
-      <a href="http://github.com/danshearmur/jenkins-radiator/tarball/master">tar</a> formats.
-    </p>
-    <p>You can also clone the project with <a href="http://git-scm.com">Git</a>
-      by running:
-      <pre>$ git clone git://github.com/danshearmur/jenkins-radiator</pre>
-    </p>
-
-    <div class="footer">
-      get the source code on GitHub : <a href="http://github.com/danshearmur/jenkins-radiator">danshearmur/jenkins-radiator</a>
-    </div>
-
+  <div id="builds">
+    
   </div>
 
+<script id="message" type="text/html">
+<% 
+  var classmap = {
+    blue      : "success",
+    red       : "error",
+    yellow    : "warning",
+    blue_anime: "info"
+  };
+  for (var i = 0, job; job = OurJenkins.jobs[i]; i++) {
+    /*if (job.color.substr(job.color.length-5,5) == "anime") {
+
+      window.time = 10;
+      } else {
+      window.time = 60;
+    } */ 
+%>
+<div class="alert-message <%= classmap[ job.color.split("_")[0] ] %> <%=job.color.split("_")[1] == "anime" ? " info": ""%>" data-uri="<%= job.lastBuild.url %>">
+    <p class="timestamp"></p>
+    <h3><%= job.displayName %><%=job.color.split("_")[1] == "anime" ? " <small>BUILDING</small>": ""%></h3>
+  </div>
+<%
+  }
+%>
+</script>
+
+<script id="commit" type="text/html">
+  <strong class="culprit">Culprit: <% for (var j = 0, culprit; culprit = culprits[j]; j++) { %><%=culprit.fullName %> <% } %></strong>
+  <dl>
+  <%
+  for (var i = 0, commit; commit = changeSet.items[i]; i++) {
+    %>
+    <dt><%= commit.author.fullName %></dt>
+    <dd><%= commit.comment %></dd>
+    <%
+  }
+  %>
+</dl>
+</script>
+
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
+<script id="tmpl">
+(function(){
+  var cache = {};
   
+  this.tmpl = function tmpl(str, data){
+    // Figure out if we're getting a template, or if we need to
+    // load the template - and be sure to cache the result.
+    var fn = !/\W/.test(str) ?
+      cache[str] = cache[str] ||
+        tmpl(document.getElementById(str).innerHTML) :
+      
+      // Generate a reusable function that will serve as a template
+      // generator (and which will be cached).
+      new Function("obj",
+        "var p=[],print=function(){p.push.apply(p,arguments);};" +
+        
+        // Introduce the data as local variables using with(){}
+        "with(obj){p.push('" +
+        
+        // Convert the template into pure JavaScript
+        str
+          .replace(/[\r\t\n]/g, " ")
+          .split("<%").join("\t")
+          .replace(/((^|%>)[^\t]*)'/g, "$1\r")
+          .replace(/\t=(.*?)%>/g, "',$1,'")
+          .split("\t").join("');")
+          .split("%>").join("p.push('")
+          .split("\r").join("\\'")
+      + "');}return p.join('');");
+    
+    // Provide some basic currying to the user
+    return data ? fn( data ) : fn;
+  };
+})();
+</script>
+<script id="pretty-date">
+/*
+ * JavaScript Pretty Date
+ * Copyright (c) 2008 John Resig (jquery.com)
+ * Licensed under the MIT license.
+ */
+
+// Takes an ISO time and returns a string representing how
+// long ago the date represents.
+function prettyDate(time){
+	var date = new Date(time),
+		diff = (((new Date()).getTime() - date.getTime()) / 1000),
+		day_diff = Math.floor(diff / 86400);
+			
+	if ( isNaN(day_diff) || day_diff < 0 )
+		return;
+
+  if ( day_diff >= 31 )
+    return "Over a month ago"
+
+	return day_diff == 0 && (
+			diff < 60 && "just now" ||
+			diff < 120 && "1 minute ago" ||
+			diff < 3600 && Math.floor( diff / 60 ) + " minutes ago" ||
+			diff < 7200 && "1 hour ago" ||
+			diff < 86400 && Math.floor( diff / 3600 ) + " hours ago") ||
+		day_diff == 1 && "Yesterday" ||
+		day_diff < 7 && day_diff + " days ago" ||
+    day_diff < 31 && Math.ceil( day_diff / 7 ) + " weeks ago";
+  
+}
+</script>
+<script id="main">
+window.OurJenkins = (function($) { 
+
+  var jobList, loadJSON, template, loop, jenkinsScript, builds, prog, sorted;
+
+  loadJSON = function(o) {
+    $(function() {
+      sorted.removeClass("sorted");
+      jobList = window.OurJenkins.jobs = o.jobs;
+      for (var i = 0, job; job = jobList[i]; i++) {
+        console.log('job' + i)
+
+        var url = job.lastBuild.url + "api/json?depth=1&jsonp=?";
+        $.getJSON(url, function(data) {
+
+          var el = $('.alert-message[data-uri="' + data.url + '"]'),
+          date = new Date(data.timestamp);
+          el.find('.timestamp').text(prettyDate(date.toString()));
+          el.attr('data-date', data.timestamp).append( tmpl("commit", data) );
+
+          window.OurJenkins.count += 1;
+          if (window.OurJenkins.count == window.OurJenkins.jobs.length-1) {
+            var builds = $('#builds>div').get();
+            builds.sort(function(a, b) {
+              var compA = $(a).data("date"),
+                  compB = $(b).data("date");
+                  return (compA > compB) ? -1 : (compA < compB) ? 1 : 0;
+            });
+            $.each(builds, function(i, el) {
+              $('#builds').append(el);
+            });
+            sorted.addClass("sorted");
+          }
+        });
+      }
+      window.OurJenkins.draw();
+    });
+  };
+
+  drawHtmls = function() {
+    builds.html( tmpl("message", window.OurJenkins) );
+  };
+window.time = 60;
+  loop = {
+
+    time: 20, // in seconds
+
+    func: function() {
+
+      for(var i in window) { 
+        if(i.substr(0,6) == "jQuery" && i.length > 6) { 
+          delete window[i];
+        }
+      }
+
+      window.OurJenkins.count = 0; 
+
+      var newUrl = "http://jenkins/view/SIPP2/api/json?depth=1&jsonp=OurJenkins.load&filter=";
+      $.ajax(newUrl, {dataType:'jsonp'});
+
+      prog.addClass("notrans").removeClass("hide");
+
+      setTimeout(function() {
+        prog.removeClass("notrans").addClass("hide");
+      }, 100);
+
+      // Call yourself
+      setTimeout(arguments.callee, window.time * 1000);
+    },
+
+    init: function() {
+      jenkinsScript = $('#jenkins');
+      template      = $('#message');
+      builds        = $('#builds');
+      prog          = $('#progress');
+      sorted        = $('body');
+      prog.css("-webkit-transition-duration", window.time + "s");
+      loop.func();
+    }
+
+  };
+
+  // Document Ready
+  $(function() {
+    loop.init();
+  });
+
+  // Public
+  return {
+    load: loadJSON,
+    draw: drawHtmls,
+    jobs: [],
+    count: 0
+  };
+
+})(jQuery);
+</script>
+
 </body>
 </html>
