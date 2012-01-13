@@ -9,7 +9,8 @@
   html, body { height:100%; }
   body { background-image: -webkit-gradient(linear, left top, left bottom, from(#555), to(#202020)); }
   h3.container { margin:0 20px; width:auto; }
-  #builds { padding:60px 10px 10px 10px; -webkit-column-count: 2;  -webkit-column-gap: 15px; }
+  #wrapper { padding:60px 10px 10px 10px; } 
+  #builds { width:50%; -webkit-column-count: 2;  -webkit-column-gap: 15px; }
   #sorted, .timestamp { float:right; margin-top:9px; }
   #sorted { color:#EF6B00; display:none; }
   .alert-message { display:none; -webkit-column-break-inside: avoid; }
@@ -32,11 +33,11 @@
       <div id="progress"></div>
     </div>
   </header>
-
+<div id="wrapper">
   <div id="builds">
     
   </div>
-
+</div>
 <script id="message" type="text/html">
 <% 
   var classmap = {
