@@ -70,7 +70,7 @@
   for (var i = 0, commit; commit = changeSet.items[i]; i++) {
     %>
     <dt><%= commit.author.fullName %></dt>
-    <dd><%= commit.comment %></dd>
+    <dd><%= commit.comment.replace('\n', '<br />')  %></dd>
     <%
   }
   %>
