@@ -6,7 +6,8 @@
 <title>jenkins</title>
 <link rel="stylesheet" href="bootstrap-1.2.0.min.css">
 <style>
-  html, body { height:100%; }
+    html, body { height:100%; }
+    body.george #wrapper:before { content:"george did it"; display:fixed; postion:fixed; left:10px; bottom:10px; color:#fff; }
   body { background-image: -webkit-gradient(linear, left top, left bottom, from(#555), to(#202020)); }
   h3.container { margin:0 20px; width:auto; }
   #wrapper { padding:60px 10px 10px 10px; } 
@@ -70,7 +71,7 @@
   for (var i = 0, commit; commit = changeSet.items[i]; i++) {
     %>
     <dt><%= commit.author.fullName %></dt>
-    <dd><%= commit.comment.split('\n')[0]  %></dd>
+    <dd><%= commit.comment.split('\n')[0].replace("<", "&lt;")  %></dd>
     <%
   }
   %>
