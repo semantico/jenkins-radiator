@@ -4,20 +4,21 @@
 
 <meta charset="utf-8">
 <title>jenkins</title>
-<link rel="stylesheet" href="http://twitter.github.com/bootstrap/assets/css/bootstrap-1.2.0.min.css">
+<link rel="stylesheet" href="bootstrap-1.2.0.min.css">
 <style>
-  html, body { height:100%; } 
+    html, body { height:100%; }
+    body.george #wrapper:before { content:"george did it"; display:fixed; postion:fixed; left:10px; bottom:10px; color:#fff; }
   body { background-image: -webkit-gradient(linear, left top, left bottom, from(#555), to(#202020)); }
   h3.container { margin:0 20px; width:auto; }
   #wrapper { padding:60px 10px 10px 10px; } 
-  #builds { width:50%; -webkit-column-count: 2;  -webkit-column-gap: 15px; }
+  #builds { /*width:50%;*/ -webkit-column-count: 3;  -webkit-column-gap: 15px; }
   #sorted, .timestamp { float:right; margin-top:9px; }
   #sorted { color:#EF6B00; display:none; }
   .alert-message { display:none; -webkit-column-break-inside: avoid; }
   .sorted .alert-message { display:block; }
   dl { margin:0; }
   .fill { position:relative; }
-  #progress { position:absolute; height:2px; width:100%; left:0; top:0; background:#EF6B00; -webkit-transition:width 60s linear; z-index:+1000; }
+  #progress { position:absolute; height:2px; width:100%; left:0; top:0; background:#EF6B00; -webkit-transition:width 60s linear; z-index:+999999; }
   #progress.hide { width:0%; }
   #progress.notrans { -webkit-transition:none !important; }
   .success .culprit { display:none; }
@@ -70,7 +71,7 @@
   for (var i = 0, commit; commit = changeSet.items[i]; i++) {
     %>
     <dt><%= commit.author.fullName %></dt>
-    <dd><%= commit.comment %></dd>
+    <dd><%= commit.comment.split('\n')[0].replace("<", "&lt;")  %></dd>
     <%
   }
   %>
@@ -177,11 +178,11 @@ window.OurJenkins = (function($) {
               $('#builds').append(el);
             });
             sorted.addClass("sorted");
-            $('body').animate({ scrollTop: $(document).height() }
-                , 25000
-                , function(){ 
-                    $('body').animate({ scrollTop:0 }, 25000);
-                });
+            //$('body').animate({ scrollTop: $(document).height() }
+            //    , 25000
+            //    , function(){ 
+            //        $('body').animate({ scrollTop:0 }, 25000);
+            //    });
           }
         });
       }
