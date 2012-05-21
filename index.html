@@ -208,7 +208,7 @@ window.time = 60;
 
       window.OurJenkins.count = 0; 
 
-      var newUrl = "http://jenkins/view/SIPP2/api/json?depth=1&jsonp=OurJenkins.load&filter=";
+      var newUrl = "http://jenkins/view/InformationRadiator/api/json?depth=1&jsonp=OurJenkins.load&filter=";
       $.ajax(newUrl, {dataType:'jsonp'});
 
       prog.addClass("notrans").removeClass("hide");
