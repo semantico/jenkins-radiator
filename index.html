@@ -147,6 +147,8 @@ function prettyDate(time){
 }
 </script>
 <script id="main">
+var group = window.location.hash.slice(1);
+
 window.OurJenkins = (function($) { 
 
   var jobList, loadJSON, template, loop, jenkinsScript, builds, prog, sorted;
@@ -160,7 +162,6 @@ window.OurJenkins = (function($) {
 
         var url = job.lastBuild.url + "api/json?depth=1&jsonp=?";
         $.getJSON(url, function(data) {
-
           var el = $('.alert-message[data-uri="' + data.url + '"]'),
           date = new Date(data.timestamp);
           el.find('.timestamp').text(prettyDate(date.toString()));
@@ -208,7 +209,7 @@ window.time = 60;
 
       window.OurJenkins.count = 0; 
 
-      var newUrl = "http://jenkins/view/InformationRadiator/api/json?depth=1&jsonp=OurJenkins.load&filter=";
+      var newUrl = "http://jenkins/view/" + group + "/api/json?depth=1&jsonp=OurJenkins.load&filter=";
       $.ajax(newUrl, {dataType:'jsonp'});
 
       prog.addClass("notrans").removeClass("hide");
