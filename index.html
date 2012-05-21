@@ -71,7 +71,13 @@
   for (var i = 0, commit; commit = changeSet.items[i]; i++) {
     %>
     <dt><%= commit.author.fullName %></dt>
-    <dd><%= commit.comment.split('\n')[0].replace("<", "&lt;")  %></dd>
+    <dd>
+        <% if (commit.comment) { %> 
+            <%= commit.comment.split('\n')[0].replace("<", "&lt;")  %>
+        <% } else { %>
+            <%= commit.msg.split('\n')[0].replace("<", "&lt;")  %>
+        <% } %>
+    </dd>
     <%
   }
   %>
@@ -157,17 +163,19 @@ window.OurJenkins = (function($) {
     $(function() {
       sorted.removeClass("sorted");
       jobList = window.OurJenkins.jobs = o.jobs;
-      for (var i = 0, job; job = jobList[i]; i++) {
-        console.log('job' + i)
+      for (var i = jobList.length -1, job; job = jobList[i]; i--) {
 
         var url = job.lastBuild.url + "api/json?depth=1&jsonp=?";
+        console.log('job' + i + ' ' + url)
         $.getJSON(url, function(data) {
           var el = $('.alert-message[data-uri="' + data.url + '"]'),
           date = new Date(data.timestamp);
           el.find('.timestamp').text(prettyDate(date.toString()));
+          console.log(data);
           el.attr('data-date', data.timestamp).append( tmpl("commit", data) );
 
           window.OurJenkins.count += 1;
+          console.log(1)
           if (window.OurJenkins.count == window.OurJenkins.jobs.length-1) {
             var builds = $('#builds>div').get();
             builds.sort(function(a, b) {
