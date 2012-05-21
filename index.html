@@ -22,6 +22,8 @@
   #progress.hide { width:0%; }
   #progress.notrans { -webkit-transition:none !important; }
   .success .culprit { display:none; }
+  #sipp2 { display:none; }
+  #SIPP2 #sipp2 { display:block; }
 </style>
 
 </head>
@@ -30,7 +32,7 @@
 
   <header class="topbar">
     <div class="fill">
-      <h3 class="container"><a href="/">SIPP<span style="color:#EF6B00">2</span> Jenkins</span></a><p id="sorted">Sorted: &#10004;</p></h3>
+        <h3 class="container"><a href="/"><span id="sipp2">SIPP<span style="color:#EF6B00">2</span></span> Jenkins</span></a><p id="sorted">Sorted: &#10004;</p></h3>
       <div id="progress"></div>
     </div>
   </header>
@@ -244,7 +246,9 @@ window.time = 60;
 
   // Document Ready
   $(function() {
-    loop.init();
+      loop.init();
+      $('body').addClass(group);
+      document.title = group + " " + document.title;
   });
 
   // Public
