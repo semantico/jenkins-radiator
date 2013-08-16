@@ -67,23 +67,21 @@
 </script>
 
 <script id="commit" type="text/html">
-  <strong class="culprit">Culprit: <% for (var j = 0, culprit; culprit = culprits[j]; j++) { %><%=culprit.fullName %> <% } %></strong>
-  <dl>
+  <% if(culprits.length > 0) { %>
+    <p><strong>Culprits:</strong> <% for (var j = 0, culprit; culprit = culprits[j]; j++) { %><%=culprit.fullName %> <% } %></p>
+  <% } %>
+
+  <% if(changeSet.items.length > 0) {%>
+  <p><strong>Committers:</strong>
   <%
-  for (var i = 0, commit; commit = changeSet.items[i]; i++) {
-    %>
-    <dt><%= commit.author.fullName %></dt>
-    <dd>
-        <% if (commit.comment) { %> 
-            <%= commit.comment.split('\n')[0].replace("<", "&lt;")  %>
-        <% } else { %>
-            <%= commit.msg.split('\n')[0].replace("<", "&lt;")  %>
-        <% } %>
-    </dd>
-    <%
-  }
+  var authors = {};
+  for (var i = 0, commit; commit = changeSet.items[i]; i++) { authors[commit.author.fullName] = true; }
   %>
-</dl>
+  <% for(var au in authors){ %>
+  <%= au %> 
+  <% } %>
+  </p>
+  <% } %>
 </script>
 
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
