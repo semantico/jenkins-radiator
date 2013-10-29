@@ -6,8 +6,7 @@
 <title>jenkins</title>
 <link rel="stylesheet" href="bootstrap-1.2.0.min.css">
 <style>
-    html, body { height:100%; }
-    body.george #wrapper:before { content:"george did it"; display:fixed; postion:fixed; left:10px; bottom:10px; color:#fff; }
+  html, body { height:100%; }
   body { background-image: -webkit-gradient(linear, left top, left bottom, from(#555), to(#202020)); }
   h3.container { margin:0 20px; width:auto; }
   #wrapper { padding:60px 10px 10px 10px; } 
@@ -23,7 +22,20 @@
   #progress.notrans { -webkit-transition:none !important; }
   .success .culprit { display:none; }
   #sipp2 { display:none; }
-  #SIPP2 #sipp2 { display:block; }
+  #SIPP2 #sipp2 { display:block; } 
+ 
+  #builds .alert-message p{
+    text-shadow: 0 0 2px black; 
+  }
+  #builds h3{
+    text-shadow: none;
+  }
+
+  @media (max-aspect-ratio: 1/1){
+    #builds {
+      -webkit-column-count: 2;
+    }
+  }
 </style>
 
 </head>
@@ -203,9 +215,8 @@ window.OurJenkins = (function($) {
     builds.html( tmpl("message", window.OurJenkins) );
   };
 window.time = 60;
+window.reloadEvery = 30; //minutes
   loop = {
-
-    time: 20, // in seconds
 
     func: function() {
 
@@ -237,6 +248,7 @@ window.time = 60;
       prog          = $('#progress');
       sorted        = $('body');
       prog.css("-webkit-transition-duration", window.time + "s");
+      setTimeout(function(){ window.location.href = window.location.href }, window.reloadEvery * 1000 * 60);
       loop.func();
     }
 
